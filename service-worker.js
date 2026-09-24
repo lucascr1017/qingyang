@@ -1,9 +1,9 @@
-const CACHE_NAME = 'qingyang-v9-20260924-1';
+const CACHE_NAME = 'qingyang-v10-20260924-1';
 const APP_SHELL = [
   './',
   './index.html',
   './script.js',
-  './manifest.webmanifest',
+  './manifest.json',
   './assets/css/site.css',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
