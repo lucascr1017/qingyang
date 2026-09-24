@@ -547,19 +547,13 @@ function initPWAInstall() {
     installBtn.addEventListener('click', async () => {
       const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       if (standalone) {
-        window.alert('“清养”已经在桌面应用模式中打开。');
         return;
       }
-      if (!window.isSecureContext) {
-        window.alert('当前安全连接还没有完全生效，浏览器暂时不会允许一键安装。等 HTTPS 证书正常后再点一次即可。');
-        return;
-      }
+
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
         try { await deferredInstallPrompt.userChoice; } catch {}
         deferredInstallPrompt = null;
-      } else {
-        showInstallDialog();
       }
     });
   }
