@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qingyang-v5-20260924-1';
+const CACHE_NAME = 'qingyang-v6-20260924-1';
 const APP_SHELL = [
   './',
   './index.html',
