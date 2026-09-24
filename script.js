@@ -693,17 +693,11 @@ function hideInstallHelp() {
 }
 
 function initPWAInstall() {
-  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  setInstallButtonsVisible(!standalone);
+  // 在普通网页里始终显示安装入口；安装成功后再隐藏。
+  setInstallButtonsVisible(true);
 
   $('[data-install-app]').forEach(button => {
     button.addEventListener('click', async () => {
-      const nowStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      if (nowStandalone) {
-        setInstallButtonsVisible(false);
-        return;
-      }
-
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
         try {
@@ -739,7 +733,7 @@ function initPWAInstall() {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js?v=20260924-1517', { scope: '/', updateViaCache: 'none' }).catch(() => {});
+      navigator.serviceWorker.register('/service-worker.js?v=20260924-1520', { scope: '/', updateViaCache: 'none' }).catch(() => {});
     });
   }
 }
