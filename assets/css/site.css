@@ -838,3 +838,46 @@ body { font-size: 18px; }
     font-size: 15px;
   }
 }
+
+
+/* V13: prominent install CTA */
+.install-help-text {
+  margin: 8px 0 24px;
+  color: #43554b;
+  font-size: 18px;
+  line-height: 1.8;
+}
+.install-help-ok {
+  width: 100%;
+  min-height: 50px;
+  border: 0;
+  background: var(--qy-pine);
+  color: #fff;
+  cursor: pointer;
+  font-size: 17px;
+}
+.install-mobile-cta {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .install-mobile-cta {
+    position: fixed;
+    z-index: 2200;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    display: block;
+    min-height: 54px;
+    padding: 0 18px;
+    border: 1px solid rgba(255,255,255,.32);
+    background: var(--qy-pine-deep);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(18,29,23,.28);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .03em;
+  }
+  .install-mobile-cta[hidden] { display: none; }
+  body { padding-bottom: 86px; }
+}
