@@ -545,12 +545,6 @@ function initPWAInstall() {
   const closeBtn = $('#closeInstallDialog');
   const dialog = $('#installDialog');
 
-  // Android APK WebView 已经是独立应用，不再显示“放到手机桌面”。
-  const insideQingYangApp = /QingYangApp\/\d/i.test(navigator.userAgent);
-  if (insideQingYangApp && installBtn) {
-    installBtn.hidden = true;
-    return;
-  }
 
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
