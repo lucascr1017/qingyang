@@ -19,13 +19,18 @@ let timerTicker = null;
 
 let pwaPromptSeen = false;
 let pwaPromptSeenAt = null;
-window.addEventListener('beforeinstallprompt', () => {
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
   pwaPromptSeen = true;
   pwaPromptSeenAt = Date.now();
+
   const live = document.querySelector('#pwaPromptLive');
   if (live) {
     live.dataset.state = 'ok';
-    live.innerHTML = '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">浏览器刚刚触发了原生安装事件。</div>';
+    live.innerHTML = '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">浏览器已提供原生安装窗口；页面上的“添加到手机桌面”按钮现在可以直接调起它。</div>';
   }
 });
 
@@ -645,12 +650,96 @@ function hideInstallDialog() {
   if (dialog) dialog.hidden = true;
 }
 
+function installHelpMessage() {
+  const ua = navigator.userAgent || '';
+
+  if (/QHBrowser|360SE|360EE|360Browser/i.test(ua)) {
+    return '请点屏幕下方中间的“≡”菜单，再点“添加到主屏幕”。';
+  }
+  if (/HuaweiBrowser/i.test(ua)) {
+    return '请点浏览器菜单，再选择“添加至桌面”或“添加到主屏幕”。';
+  }
+  if (/MiuiBrowser/i.test(ua)) {
+    return '请点浏览器菜单，再选择“添加到桌面”。';
+  }
+  if (/HeyTapBrowser|OppoBrowser|VivoBrowser/i.test(ua)) {
+    return '请点浏览器菜单，再选择“添加到桌面”或“添加到主屏幕”。';
+  }
+  if (/EdgA|EdgiOS/i.test(ua)) {
+    return '请点浏览器菜单，再选择“添加到手机”或“添加到主屏幕”。';
+  }
+  if (/Chrome|CriOS/i.test(ua)) {
+    return '请点浏览器菜单，再选择“添加到主屏幕”或“安装应用”。';
+  }
+  return '请点浏览器的“菜单 / 更多”，再找“添加到桌面”“添加到主屏幕”或“创建快捷方式”。';
+}
+
+function setInstallButtonsVisible(visible) {
+  $('[data-install-app]').forEach(button => {
+    button.hidden = !visible;
+  });
+}
+
+function showInstallHelp() {
+  const dialog = $('#installHelpDialog');
+  const text = $('#installHelpText');
+  if (text) text.textContent = installHelpMessage();
+  if (dialog) dialog.hidden = false;
+}
+
+function hideInstallHelp() {
+  const dialog = $('#installHelpDialog');
+  if (dialog) dialog.hidden = true;
+}
+
 function initPWAInstall() {
-  // 不拦截 beforeinstallprompt：让 Chrome / Edge / 360 / 系统浏览器
-  // 自己决定何时显示原生“安装应用 / 添加到主屏幕”提示。
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  setInstallButtonsVisible(!standalone);
+
+  $('[data-install-app]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const nowStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (nowStandalone) {
+        setInstallButtonsVisible(false);
+        return;
+      }
+
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        try {
+          const choice = await deferredInstallPrompt.userChoice;
+          if (choice && choice.outcome === 'accepted') {
+            setInstallButtonsVisible(false);
+          }
+        } catch {}
+        deferredInstallPrompt = null;
+        return;
+      }
+
+      showInstallHelp();
+    });
+  });
+
+  const close = $('#closeInstallHelp');
+  const ok = $('#installHelpOk');
+  const dialog = $('#installHelpDialog');
+  if (close) close.addEventListener('click', hideInstallHelp);
+  if (ok) ok.addEventListener('click', hideInstallHelp);
+  if (dialog) {
+    dialog.addEventListener('click', event => {
+      if (event.target === dialog) hideInstallHelp();
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    setInstallButtonsVisible(false);
+    hideInstallHelp();
+  });
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js?v=20260924-1508', { scope: '/', updateViaCache: 'none' }).catch(() => {});
+      navigator.serviceWorker.register('/service-worker.js?v=20260924-1517', { scope: '/', updateViaCache: 'none' }).catch(() => {});
     });
   }
 }
