@@ -17,6 +17,13 @@ const LEGACY_CHECKIN_KEY = "qingyang-checkins";
 let timerTicker = null;
 let deferredInstallPrompt = null;
 
+// 尽早捕获浏览器原生安装事件。Chrome 有时会在 DOMContentLoaded 前触发它，
+// 如果等到 initPWAInstall() 才监听，就可能错过，导致按钮点了没反应。
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+
 function practiceName(id) {
   return practices.find(item => item.id === id)?.name || "自由练习";
 }
@@ -537,11 +544,6 @@ function initPWAInstall() {
   const installBtn = $('#installAppBtn');
   const closeBtn = $('#closeInstallDialog');
   const dialog = $('#installDialog');
-
-  window.addEventListener('beforeinstallprompt', event => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-  });
 
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
