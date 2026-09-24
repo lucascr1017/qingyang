@@ -16,6 +16,93 @@ const LEGACY_CHECKIN_KEY = "qingyang-checkins";
 
 let timerTicker = null;
 
+
+let pwaPromptSeen = false;
+window.addEventListener('beforeinstallprompt', () => {
+  pwaPromptSeen = true;
+});
+
+async function initPWADebug() {
+  const params = new URLSearchParams(location.search);
+  if (!params.has('pwa-debug')) return;
+
+  const panel = document.createElement('section');
+  panel.id = 'pwaDebugPanel';
+  panel.style.cssText = [
+    'position:fixed','left:12px','right:12px','bottom:12px','z-index:99999',
+    'max-height:72vh','overflow:auto','padding:16px','background:#fff',
+    'color:#111','border:2px solid #111','font:14px/1.55 system-ui,sans-serif',
+    'box-shadow:0 8px 30px rgba(0,0,0,.25)'
+  ].join(';');
+  panel.innerHTML = '<strong style="font-size:18px">清养 PWA 诊断</strong><div id="pwaDebugRows" style="margin-top:10px">正在检查……</div>';
+  document.body.appendChild(panel);
+
+  const rows = [];
+  const push = (name, ok, detail) => rows.push({ name, ok, detail });
+
+  push('HTTPS / 安全上下文', window.isSecureContext, location.protocol + ' / isSecureContext=' + window.isSecureContext);
+  push('Service Worker API', 'serviceWorker' in navigator, 'serviceWorker' in navigator ? '支持' : '不支持');
+
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    push('Service Worker 注册', !!reg, reg ? ('scope=' + reg.scope + '；active=' + !!reg.active) : '未注册');
+    push('Service Worker 控制当前页', !!navigator.serviceWorker.controller,
+      navigator.serviceWorker.controller ? '已控制当前页面' : '当前页面还没被 Service Worker 控制');
+  } catch (e) {
+    push('Service Worker 注册', false, String(e));
+  }
+
+  try {
+    const m = await fetch('./manifest.webmanifest', { cache: 'no-store' });
+    const ctype = m.headers.get('content-type') || '(无)';
+    const data = await m.json();
+    const hasName = !!(data.name || data.short_name);
+    const hasStart = !!data.start_url;
+    const goodDisplay = ['standalone','fullscreen','minimal-ui'].includes(data.display);
+    const icons = Array.isArray(data.icons) ? data.icons : [];
+    const has192 = icons.some(i => String(i.sizes || '').split(/\s+/).includes('192x192'));
+    const has512 = icons.some(i => String(i.sizes || '').split(/\s+/).includes('512x512'));
+    push('Manifest 可读取', m.ok, 'HTTP ' + m.status + '；Content-Type=' + ctype);
+    push('Manifest 必要字段', hasName && hasStart && goodDisplay && has192 && has512,
+      'name=' + hasName + '；start_url=' + hasStart + '；display=' + data.display + '；192=' + has192 + '；512=' + has512);
+  } catch (e) {
+    push('Manifest 可读取', false, String(e));
+  }
+
+  for (const spec of [
+    ['192 图标','./assets/icons/icon-192.png',192],
+    ['512 图标','./assets/icons/icon-512.png',512]
+  ]) {
+    try {
+      const img = new Image();
+      const result = await new Promise(resolve => {
+        img.onload = () => resolve({ok: img.naturalWidth === spec[2] && img.naturalHeight === spec[2], detail: img.naturalWidth + '×' + img.naturalHeight});
+        img.onerror = () => resolve({ok:false, detail:'加载失败'});
+        img.src = spec[1] + '?diag=' + Date.now();
+      });
+      push(spec[0], result.ok, result.detail);
+    } catch (e) {
+      push(spec[0], false, String(e));
+    }
+  }
+
+  // Give Chromium a moment to dispatch beforeinstallprompt if it is going to.
+  await new Promise(r => setTimeout(r, 2500));
+  push('beforeinstallprompt', pwaPromptSeen,
+    pwaPromptSeen ? '浏览器已判定可安装，并触发了安装事件' : '本次页面加载没有触发安装事件');
+
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  push('当前已安装', !standalone, standalone ? '当前已经以独立 App 模式运行' : '当前不是独立 App 模式');
+
+  const rowsEl = panel.querySelector('#pwaDebugRows');
+  rowsEl.innerHTML = rows.map(r =>
+    '<div style="padding:8px 0;border-top:1px solid #ddd">' +
+    '<b style="color:' + (r.ok ? '#176b3a' : '#a11') + '">' + (r.ok ? '✓ ' : '✗ ') + r.name + '</b>' +
+    '<div style="margin-top:2px;word-break:break-all">' + String(r.detail).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
 function practiceName(id) {
   return practices.find(item => item.id === id)?.name || "自由练习";
 }
@@ -563,4 +650,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initRecordBackup();
   initPWAInstall();
   initAnchorLinks();
+  initPWADebug();
 });
