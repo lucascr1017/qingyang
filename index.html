@@ -65,6 +65,7 @@
         </section>
 
         <div class="side-footer">
+          <button class="install-app-button" type="button" data-install-app>添加到手机桌面</button>
           <p>一招一式，慢慢练。</p>
           <small>本页仅作日常练习整理。</small>
         </div>
@@ -355,6 +356,17 @@
         <p>界面设计使用 Han Design 视觉资产，并参考 HTML5 UP Editorial 的信息布局。HTML5 UP 采用 CC BY 3.0 许可。</p>
       </footer>
     </main>
+  </div>
+  <button class="install-mobile-cta" type="button" data-install-app>添加到手机桌面</button>
+
+  <div id="installHelpDialog" class="install-dialog" hidden>
+    <div class="install-dialog-card" role="dialog" aria-modal="true" aria-labelledby="installHelpTitle">
+      <button id="closeInstallHelp" class="install-dialog-close" type="button" aria-label="关闭">×</button>
+      <p class="eyebrow">添加到桌面</p>
+      <h2 id="installHelpTitle">以后点“清养”就能打开</h2>
+      <p id="installHelpText" class="install-help-text"></p>
+      <button id="installHelpOk" class="install-help-ok" type="button">知道了</button>
+    </div>
   </div>
 </body>
 </html>
