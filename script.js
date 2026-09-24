@@ -650,7 +650,7 @@ function initPWAInstall() {
   // 自己决定何时显示原生“安装应用 / 添加到主屏幕”提示。
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+      navigator.serviceWorker.register('/service-worker.js?v=20260924-1508', { scope: '/', updateViaCache: 'none' }).catch(() => {});
     });
   }
 }
