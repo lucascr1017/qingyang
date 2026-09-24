@@ -53,7 +53,7 @@ async function initPWADebug() {
   }
 
   try {
-    const m = await fetch('./manifest.webmanifest', { cache: 'no-store' });
+    const m = await fetch('/manifest.json', { cache: 'no-store' });
     const ctype = m.headers.get('content-type') || '(无)';
     const data = await m.json();
     const hasName = !!(data.name || data.short_name);
