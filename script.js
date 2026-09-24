@@ -65,7 +65,7 @@ async function initPWADebug() {
   }
 
   try {
-    const m = await fetch('/manifest.json', { cache: 'no-store' });
+    const m = await fetch('./manifest.json', { cache: 'no-store' });
     const ctype = m.headers.get('content-type') || '(无)';
     const data = await m.json();
     const hasName = !!(data.name || data.short_name);
@@ -733,7 +733,7 @@ function initPWAInstall() {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js?v=20260924-1520', { scope: '/', updateViaCache: 'none' }).catch(() => {});
+      navigator.serviceWorker.register('./service-worker.js?v=20260924-1530', { updateViaCache: 'none' }).catch(() => {});
     });
   }
 }
