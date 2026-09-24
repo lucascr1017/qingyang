@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="pine-wheat" data-han-intensity="1" data-han-accent-families="pine-wheat">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="六套日常功法的视频、练习提示与锻炼记录。">
+  <meta name="theme-color" content="#344b3e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="清养">
+  <title>清养 · 日常功法</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/icons/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="han-skip-link" href="#main">跳到主要内容</a>
+
+  <div class="site-shell">
+    <aside class="sidebar" aria-label="站点导航">
+      <div class="sidebar-inner">
+        <a class="brand" href="#home" aria-label="清养首页">
+          <span class="brand-mark" aria-hidden="true">☯</span>
+          <span class="brand-copy">
+            <strong>清养</strong>
+            <small>日常功法</small>
+          </span>
+        </a>
+
+        <p class="sidebar-intro">给家里整理的练功小站。想练哪套就点开，视频、顺序和提示都放在一起。</p>
+
+        <nav class="side-nav" aria-label="主导航">
+          <a href="#home"><span>01</span>首页</a>
+          <a href="#catalog"><span>02</span>功法目录</a>
+          <a href="#practice"><span>03</span>跟练视频</a>
+          <a href="#today"><span>04</span>今日练习</a>
+          <a href="#notes"><span>05</span>注意事项</a>
+        </nav>
+
+        <div class="side-divider"></div>
+
+        <section class="side-timer" aria-labelledby="side-timer-title">
+          <p class="side-kicker">本次锻炼 · TIMER</p>
+          <h2 id="side-timer-title">计时状态</h2>
+
+          <div class="side-timer-idle" data-side-timer-idle>
+            <p>还没有开始计时。</p>
+            <a href="#today">到“今日练习”开始 →</a>
+          </div>
+
+          <div class="side-timer-active" data-side-timer-active hidden>
+            <strong class="side-current-practice" data-timer-practice-name>武当八段锦</strong>
+            <div class="side-timer-readout" data-timer-display>00:00</div>
+            <p class="side-timer-state" data-timer-state>尚未开始</p>
+            <div class="side-timer-actions">
+              <button id="sideTimerToggle" type="button">暂停</button>
+              <button type="button" data-timer-action="finish">结束并记录</button>
+            </div>
+          </div>
+
+          <p class="side-timer-total">今天累计 <strong data-today-total>0 分钟</strong></p>
+        </section>
+
+        <div class="side-footer">
+          <button id="installAppBtn" class="install-app-button" type="button">安装“清养”到手机</button>
+          <p>一招一式，慢慢练。</p>
+          <small>本页仅作日常练习整理。</small>
+        </div>
+      </div>
+    </aside>
+
+    <main id="main" class="main-panel">
+      <section id="home" class="hero section-pad" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">DAILY PRACTICE · 日常功法整理</p>
+          <h1 id="hero-title">日常功法，<br>想练哪套就点哪套。</h1>
+          <p class="hero-lead">八段锦、五禽戏、太极十三势、站桩、八部金刚功和易筋经组合。视频、动作顺序和练习提示都放在这里。</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#catalog">看看六套功法 <span aria-hidden="true">→</span></a>
+            <button id="randomPracticeBtn" class="text-action" type="button">今天练什么？</button>
+          </div>
+          <p id="randomResult" class="hero-result" aria-live="polite"></p>
+        </div>
+
+        <aside class="hero-board" aria-label="功法概览">
+          <div class="hero-board-head">
+            <span>本页收录</span>
+            <strong>06</strong>
+          </div>
+          <div class="hero-board-list">
+            <button type="button" data-target="baduanjin"><span>01</span><b>武当八段锦</b><small>舒展</small></button>
+            <button type="button" data-target="wuqinxi"><span>02</span><b>健身气功五禽戏</b><small>全身</small></button>
+            <button type="button" data-target="taiji"><span>03</span><b>武当太极十三势</b><small>太极</small></button>
+            <button type="button" data-target="zhanzhuang"><span>04</span><b>武当站桩</b><small>静功</small></button>
+            <button type="button" data-target="jingang"><span>05</span><b>八部金刚功</b><small>镜像</small></button>
+            <button type="button" data-target="yijinjing"><span>06</span><b>倪海厦 · 易筋经组合</b><small>长练</small></button>
+          </div>
+        </aside>
+      </section>
+
+      <section class="notice-strip" aria-label="今日提示">
+        <span class="notice-strip-mark">慢</span>
+        <div>
+          <strong>今天状态一般，就少练一点。</strong>
+          <p>动作自然、呼吸平稳，比硬跟视频的幅度和遍数更重要。</p>
+        </div>
+      </section>
+
+      <section id="catalog" class="catalog section-pad" aria-labelledby="catalog-title">
+        <header class="section-heading">
+          <div>
+            <p class="eyebrow">CATALOG · 目录</p>
+            <h2 id="catalog-title">先选一套</h2>
+          </div>
+          <p>这里不做“推荐排名”。按当天想动一动、想静一静，或者想认真学动作来选就行。</p>
+        </header>
+
+        <div class="catalog-grid">
+          <button class="catalog-item" type="button" data-target="baduanjin">
+            <span class="catalog-no">01</span>
+            <div><h3>武当八段锦</h3><p>动作舒缓，带呼吸口令。</p></div>
+            <span class="catalog-tag">舒展</span>
+            <span class="catalog-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="catalog-item" type="button" data-target="wuqinxi">
+            <span class="catalog-no">02</span>
+            <div><h3>健身气功五禽戏</h3><p>虎、鹿、熊、猿、鸟五类动作。</p></div>
+            <span class="catalog-tag">全身</span>
+            <span class="catalog-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="catalog-item" type="button" data-target="taiji">
+            <span class="catalog-no">03</span>
+            <div><h3>武当太极十三势</h3><p>适合逐步学站姿、重心和衔接。</p></div>
+            <span class="catalog-tag">教学</span>
+            <span class="catalog-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="catalog-item" type="button" data-target="zhanzhuang">
+            <span class="catalog-no">04</span>
+            <div><h3>武当站桩</h3><p>袁师懋教学，静态基本功。</p></div>
+            <span class="catalog-tag">静功</span>
+            <span class="catalog-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="catalog-item" type="button" data-target="jingang">
+            <span class="catalog-no">05</span>
+            <div><h3>八部金刚功</h3><p>初学者五遍镜像版，带原声口令。</p></div>
+            <span class="catalog-tag">镜像</span>
+            <span class="catalog-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="catalog-item" type="button" data-target="yijinjing">
+            <span class="catalog-no">06</span>
+            <div><h3>倪海厦 · 易筋经组合</h3><p>五脏逼毒法、文式与武式易筋经组合。</p></div>
+            <span class="catalog-tag">长练</span>
+            <span class="catalog-arrow" aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="practice" class="practice section-pad" aria-labelledby="practice-title">
+        <header class="section-heading practice-heading">
+          <div>
+            <p class="eyebrow">FOLLOW ALONG · 跟练</p>
+            <h2 id="practice-title">视频和要点放在一起</h2>
+          </div>
+          <p>一次只加载当前展开的视频。切换到另一套时，上一个播放器会自动停止。</p>
+        </header>
+
+        <div class="practice-list">
+          <details class="practice-card" id="baduanjin" data-name="武当八段锦" data-meta="舒展 · 完整跟练">
+            <summary>
+              <span class="practice-index">01</span>
+              <span class="practice-seal seal-green">舒</span>
+              <span class="practice-title"><b>武当八段锦</b><small>完整带练 · 呼吸口令</small></span>
+              <span class="practice-desc">八个动作，节奏清楚，适合日常舒展。</span>
+              <span class="practice-open">展开 <i aria-hidden="true">＋</i></span>
+            </summary>
+            <div class="practice-body">
+              <div class="video-head">
+                <div><span>跟练视频</span><h3>武当八段锦完整带练</h3></div>
+                <p>第一次可以先看动作方向，熟悉以后再跟完整节奏。</p>
+              </div>
+              <div class="video-box">
+                <iframe class="practice-player" title="武当八段锦完整带练" src="about:blank" data-src="https://player.bilibili.com/player.html?bvid=BV1ZK411z7wY&page=1&autoplay=0&danmaku=0" scrolling="no" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              </div>
+              <div class="player-bar">
+                <span class="player-status">展开后才连接播放器。</span>
+                <div><button class="reload-button" type="button">重新加载</button><a class="source-button" href="https://www.bilibili.com/video/BV1ZK411z7wY/" target="_blank" rel="noopener noreferrer">原视频 ↗</a></div>
+              </div>
+              <div class="practice-notes">
+                <div><h4>八式顺序</h4><ol><li>两手托天理三焦</li><li>左右开弓似射雕</li><li>调理脾胃须单举</li><li>五劳七伤往后瞧</li><li>摇头摆尾去心火</li><li>两手攀足固肾腰</li><li>攒拳怒目增气力</li><li>背后七颠百病消</li></ol></div>
+                <div><h4>跟练提示</h4><p>不用急着完全跟上。先看清动作方向和顺序，熟悉后再跟随完整口令。</p></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="practice-card" id="wuqinxi" data-name="健身气功五禽戏" data-meta="全身 · 呼吸口令">
+            <summary>
+              <span class="practice-index">02</span>
+              <span class="practice-seal seal-ochre">动</span>
+              <span class="practice-title"><b>健身气功五禽戏</b><small>完整跟练 · 呼吸口令</small></span>
+              <span class="practice-desc">模仿虎、鹿、熊、猿、鸟，动作变化更丰富。</span>
+              <span class="practice-open">展开 <i aria-hidden="true">＋</i></span>
+            </summary>
+            <div class="practice-body">
+              <div class="video-head"><div><span>跟练视频</span><h3>健身气功五禽戏完整版</h3></div><p>转身、下蹲和单腿动作量力而行，先保证稳定。</p></div>
+              <div class="video-box"><iframe class="practice-player" title="健身气功五禽戏完整版" src="about:blank" data-src="https://player.bilibili.com/player.html?bvid=BV1J3411s7Ph&page=1&autoplay=0&danmaku=0" scrolling="no" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+              <div class="player-bar"><span class="player-status">展开后才连接播放器。</span><div><button class="reload-button" type="button">重新加载</button><a class="source-button" href="https://www.bilibili.com/video/BV1J3411s7Ph/" target="_blank" rel="noopener noreferrer">原视频 ↗</a></div></div>
+              <div class="practice-notes"><div><h4>五禽</h4><ol><li>虎戏</li><li>鹿戏</li><li>熊戏</li><li>猿戏</li><li>鸟戏</li></ol></div><div><h4>跟练提示</h4><p>下蹲、转身和单腿动作不必追求和视频完全一致，先保证身体稳定。</p></div></div>
+            </div>
+          </details>
+
+          <details class="practice-card" id="taiji" data-name="武当太极十三势" data-meta="太极 · 动作教学">
+            <summary>
+              <span class="practice-index">03</span>
+              <span class="practice-seal seal-slate">柔</span>
+              <span class="practice-title"><b>武当太极十三势</b><small>详细教学 · 基础动作</small></span>
+              <span class="practice-desc">逐步学习站姿、重心转换和动作衔接。</span>
+              <span class="practice-open">展开 <i aria-hidden="true">＋</i></span>
+            </summary>
+            <div class="practice-body">
+              <div class="video-head"><div><span>教学视频</span><h3>武当太极十三势动作详细讲解</h3></div><p>更适合边看边学，不需要一次把全部动作记住。</p></div>
+              <div class="video-box"><iframe class="practice-player" title="武当太极十三势动作详细讲解" src="about:blank" data-src="https://player.bilibili.com/player.html?bvid=BV17m421s7xQ&page=1&autoplay=0&danmaku=0" scrolling="no" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+              <div class="player-bar"><span class="player-status">展开后才连接播放器。</span><div><button class="reload-button" type="button">重新加载</button><a class="source-button" href="https://www.bilibili.com/video/BV17m421s7xQ/" target="_blank" rel="noopener noreferrer">原视频 ↗</a></div></div>
+              <div class="practice-notes"><div><h4>学习顺序</h4><ol><li>先观察站姿</li><li>再看身体方向</li><li>体会重心转换</li><li>最后学习手部动作和衔接</li></ol></div><div><h4>跟练提示</h4><p>重心转换尽量平稳，膝关节不需要为了模仿动作而过度弯曲。</p></div></div>
+            </div>
+          </details>
+
+          <details class="practice-card" id="zhanzhuang" data-name="武当站桩" data-meta="静功 · 袁师懋教学">
+            <summary>
+              <span class="practice-index">04</span>
+              <span class="practice-seal seal-moss">静</span>
+              <span class="practice-title"><b>武当站桩</b><small>袁师懋教学 · 静态基本功</small></span>
+              <span class="practice-desc">以站姿、放松和稳定为主，与动态功法区分明显。</span>
+              <span class="practice-open">展开 <i aria-hidden="true">＋</i></span>
+            </summary>
+            <div class="practice-body">
+              <div class="video-head"><div><span>教学视频</span><h3>武当袁师懋站桩教学</h3></div><p>先学习基本站姿，再根据身体情况逐渐增加时间。</p></div>
+              <div class="video-box"><iframe class="practice-player" title="武当袁师懋站桩教学" src="about:blank" data-src="https://player.bilibili.com/player.html?bvid=BV1ib4y127bo&page=1&autoplay=0&danmaku=0" scrolling="no" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+              <div class="player-bar"><span class="player-status">展开后才连接播放器。</span><div><button class="reload-button" type="button">重新加载</button><a class="source-button" href="https://www.bilibili.com/video/BV1ib4y127bo/" target="_blank" rel="noopener noreferrer">原视频 ↗</a></div></div>
+              <div class="practice-notes"><div><h4>初练重点</h4><ol><li>先把站姿调整稳定</li><li>肩颈和手臂尽量放松</li><li>保持自然呼吸</li><li>练习时间由短到长</li></ol></div><div><h4>跟练提示</h4><p>刚开始不需要追求站很久。腿部明显发抖、疼痛、头晕或不舒服时就停下来休息。</p></div></div>
+            </div>
+          </details>
+
+          <details class="practice-card" id="jingang" data-name="八部金刚功" data-meta="镜像 · 原声口令">
+            <summary>
+              <span class="practice-index">05</span>
+              <span class="practice-seal seal-gold">刚</span>
+              <span class="practice-title"><b>八部金刚功</b><small>五遍镜像版 · 原声口令</small></span>
+              <span class="practice-desc">镜像画面适合直接跟着屏幕模仿。</span>
+              <span class="practice-open">展开 <i aria-hidden="true">＋</i></span>
+            </summary>
+            <div class="practice-body">
+              <div class="video-head"><div><span>跟练视频</span><h3>八部金刚功初学者五遍镜像版</h3></div><p>可以第一遍先看动作，熟悉左右以后再跟口令。</p></div>
+              <div class="video-box"><iframe class="practice-player" title="八部金刚功初学者五遍镜像版" src="about:blank" data-src="https://player.bilibili.com/player.html?bvid=BV1pd4y1E7Gt&page=1&autoplay=0&danmaku=0" scrolling="no" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+              <div class="player-bar"><span class="player-status">展开后才连接播放器。</span><div><button class="reload-button" type="button">重新加载</button><a class="source-button" href="https://www.bilibili.com/video/BV1pd4y1E7Gt/" target="_blank" rel="noopener noreferrer">原视频 ↗</a></div></div>
+              <div class="practice-notes"><div><h4>使用方法</h4><ol><li>第一遍先观察动作</li><li>熟悉左右方向</li><li>再尝试跟随口令</li><li>累了可以减少遍数</li></ol></div><div><h4>跟练提示</h4><p>镜像画面方便模仿，但动作幅度仍然以自己的身体状态为准。</p></div></div>
+            </div>
+          </details>
+
+          <details class="practice-card" id="yijinjing" data-name="倪海厦 · 易筋经组合" data-meta="传统养生 · 长时跟练">
+            <summary>
+              <span class="practice-index">06</span>
+              <span class="practice-seal seal-earth">养</span>
+              <span class="practice-title"><b>倪海厦 · 易筋经组合</b><small>完整组合 · 原声诀窍提示</small></span>
+              <span class="practice-desc">包含五脏逼毒法、文式易筋经和武式易筋经等。</span>
+              <span class="practice-open">展开 <i aria-hidden="true">＋</i></span>
+            </summary>
+            <div class="practice-body">
+              <div class="video-head"><div><span>完整跟练</span><h3>倪海厦易筋经组合练习</h3></div><p>内容较长，可以挑其中熟悉的部分练，不必一次完成全部。</p></div>
+              <div class="video-box"><iframe class="practice-player" title="倪海厦易筋经组合练习" src="about:blank" data-src="https://player.bilibili.com/player.html?bvid=BV1b2421c7kR&page=1&autoplay=0&danmaku=0" scrolling="no" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+              <div class="player-bar"><span class="player-status">展开后才连接播放器。</span><div><button class="reload-button" type="button">重新加载</button><a class="source-button" href="https://www.bilibili.com/video/BV1b2421c7kR/" target="_blank" rel="noopener noreferrer">原视频 ↗</a></div></div>
+              <div class="traditional-note"><strong>关于传统名称</strong><p>视频中包含“五脏逼毒法”等传统养生术语。这里保留原教学名称方便识别，不把这些说法写成确定的医学疗效。</p></div>
+              <div class="practice-notes"><div><h4>视频包含</h4><ol><li>五脏逼毒法</li><li>文式易筋经</li><li>武式易筋经</li><li>原声诀窍提示</li></ol></div><div><h4>跟练提示</h4><p>按当天状态挑一部分即可，不需要为了完成整条视频而勉强增加遍数。</p></div></div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="today" class="today section-pad" aria-labelledby="today-title">
+        <header class="section-heading">
+          <div><p class="eyebrow">TRAINING LOG · 锻炼记录</p><h2 id="today-title">今天练了多久</h2></div>
+          <p>不再手动“打卡”。开始练时点计时，结束后会自动记录今天练了哪一套、练了多久。</p>
+        </header>
+
+        <div class="timer-dashboard">
+          <section class="timer-console" aria-label="锻炼计时器">
+            <div class="timer-console-head">
+              <div>
+                <span class="timer-kicker">本次锻炼</span>
+                <h3 data-timer-practice-name>武当八段锦</h3>
+              </div>
+              <select class="timer-practice-select" aria-label="选择正在练习的功法">
+                <option value="baduanjin">武当八段锦</option>
+                <option value="wuqinxi">健身气功五禽戏</option>
+                <option value="taiji">武当太极十三势</option>
+                <option value="zhanzhuang">武当站桩</option>
+                <option value="jingang">八部金刚功</option>
+                <option value="yijinjing">倪海厦 · 易筋经组合</option>
+                <option value="free">自由练习</option>
+              </select>
+            </div>
+            <div class="timer-big" data-timer-display>00:00</div>
+            <p class="timer-main-state" data-timer-state>尚未开始</p>
+            <div class="timer-main-actions">
+              <button class="timer-start" type="button" data-timer-action="start">开始计时</button>
+              <button type="button" data-timer-action="pause">暂停</button>
+              <button type="button" data-timer-action="finish">结束并记录</button>
+            </div>
+          </section>
+
+          <section class="today-stats" aria-label="今日锻炼统计">
+            <article><span>今日累计</span><strong data-today-total>0 分钟</strong><small>实际记录时长</small></article>
+            <article><span>今日次数</span><strong id="todaySessionCount">0</strong><small>完成的练习</small></article>
+            <article><span>累计天数</span><strong id="totalPracticeDays">0</strong><small>有记录的日期</small></article>
+          </section>
+        </div>
+
+        <section class="session-history" aria-labelledby="history-title">
+          <div class="history-head">
+            <div><p class="eyebrow">TODAY'S SESSIONS · 今日明细</p><h3 id="history-title">今天的记录</h3></div>
+            <div class="history-tools">
+              <p>记录保存在当前设备，也可以手动备份。</p>
+              <div class="record-tools">
+                <button id="exportRecordsBtn" type="button">导出记录</button>
+                <label class="import-records-button" for="importRecordsInput">导入记录</label>
+                <input id="importRecordsInput" type="file" accept="application/json,.json" hidden>
+              </div>
+            </div>
+          </div>
+          <div id="todaySessions" class="history-list">
+            <p class="history-empty">今天还没有记录。开始一套练习吧。</p>
+          </div>
+        </section>
+      </section>
+
+      <section id="notes" class="notes section-pad" aria-labelledby="notes-title">
+        <header class="section-heading compact-heading">
+          <div><p class="eyebrow">BEFORE START · 开始前</p><h2 id="notes-title">三件事</h2></div>
+        </header>
+        <div class="notes-grid">
+          <article><span>01</span><h3>留点空间</h3><p>把脚边容易绊到的椅子、电线和杂物挪开。</p></article>
+          <article><span>02</span><h3>自然呼吸</h3><p>不用为了跟动作强行憋气，也不必追求夸张的呼吸。</p></article>
+          <article><span>03</span><h3>不舒服就停</h3><p>出现明显疼痛、头晕、胸闷或其他不适时，先停下来休息。</p></article>
+        </div>
+
+        <div class="disclaimer">
+          <strong>说明</strong>
+          <p>本页主要用于整理传统功法、动作教学和跟练视频。功法名称、传统理论以及视频中的相关说法，不代表本站对医学疗效作出保证，也不能替代专业医疗或康复建议。</p>
+        </div>
+      </section>
+
+      <footer class="main-footer">
+        <div><strong>清养</strong><span>给爸爸的日常功法小站</span></div>
+        <p>界面设计使用 Han Design 视觉资产，并参考 HTML5 UP Editorial 的信息布局。HTML5 UP 采用 CC BY 3.0 许可。</p>
+      </footer>
+    </main>
+  </div>
+
+  <div id="installDialog" class="install-dialog" hidden>
+    <div class="install-dialog-card" role="dialog" aria-modal="true" aria-labelledby="installDialogTitle">
+      <button id="closeInstallDialog" class="install-dialog-close" type="button" aria-label="关闭">×</button>
+      <p class="eyebrow">INSTALL · 安装到手机</p>
+      <h2 id="installDialogTitle">把“清养”放到桌面</h2>
+      <div class="install-steps">
+        <p><strong>安卓 Chrome：</strong>点右上角“⋮” → “添加到主屏幕”或“安装应用”。</p>
+        <p><strong>iPhone Safari：</strong>点底部“分享” → “添加到主屏幕” → 可选择“作为网页 App 打开”。</p>
+      </div>
+      <p class="install-note">安装后会像普通 App 一样从桌面打开。视频仍需要联网。</p>
+    </div>
+  </div>
+</body>
+</html>
