@@ -15,14 +15,6 @@ const SESSION_KEY = "qingyang-training-sessions-v2";
 const LEGACY_CHECKIN_KEY = "qingyang-checkins";
 
 let timerTicker = null;
-let deferredInstallPrompt = null;
-
-// 尽早捕获浏览器原生安装事件。Chrome 有时会在 DOMContentLoaded 前触发它，
-// 如果等到 initPWAInstall() 才监听，就可能错过，导致按钮点了没反应。
-window.addEventListener('beforeinstallprompt', event => {
-  event.preventDefault();
-  deferredInstallPrompt = event;
-});
 
 function practiceName(id) {
   return practices.find(item => item.id === id)?.name || "自由练习";
@@ -541,38 +533,8 @@ function hideInstallDialog() {
 }
 
 function initPWAInstall() {
-  const installBtn = $('#installAppBtn');
-  const closeBtn = $('#closeInstallDialog');
-  const dialog = $('#installDialog');
-
-
-  if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-      const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      if (standalone) {
-        return;
-      }
-
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        try { await deferredInstallPrompt.userChoice; } catch {}
-        deferredInstallPrompt = null;
-      }
-    });
-  }
-
-  if (closeBtn) closeBtn.addEventListener('click', hideInstallDialog);
-  if (dialog) {
-    dialog.addEventListener('click', event => {
-      if (event.target === dialog) hideInstallDialog();
-    });
-  }
-
-  window.addEventListener('appinstalled', () => {
-    deferredInstallPrompt = null;
-    if (installBtn) installBtn.textContent = '已安装到设备';
-  });
-
+  // 不拦截 beforeinstallprompt：让 Chrome / Edge / 360 / 系统浏览器
+  // 自己决定何时显示原生“安装应用 / 添加到主屏幕”提示。
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./service-worker.js').catch(() => {});
