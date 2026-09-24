@@ -3,8 +3,8 @@
   "short_name": "清养",
   "description": "六套日常功法的视频、练习提示与锻炼记录。",
   "lang": "zh-CN",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#d6d2c6",
   "theme_color": "#344b3e",
@@ -34,6 +34,6 @@
       "url": "./#today"
     }
   ],
-  "id": "/",
+  "id": "./",
   "prefer_related_applications": false
 }
