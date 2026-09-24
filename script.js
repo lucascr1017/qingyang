@@ -18,8 +18,15 @@ let timerTicker = null;
 
 
 let pwaPromptSeen = false;
+let pwaPromptSeenAt = null;
 window.addEventListener('beforeinstallprompt', () => {
   pwaPromptSeen = true;
+  pwaPromptSeenAt = Date.now();
+  const live = document.querySelector('#pwaPromptLive');
+  if (live) {
+    live.dataset.state = 'ok';
+    live.innerHTML = '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">浏览器刚刚触发了原生安装事件。</div>';
+  }
 });
 
 async function initPWADebug() {
@@ -86,11 +93,6 @@ async function initPWADebug() {
     }
   }
 
-  // Give Chromium a moment to dispatch beforeinstallprompt if it is going to.
-  await new Promise(r => setTimeout(r, 2500));
-  push('beforeinstallprompt', pwaPromptSeen,
-    pwaPromptSeen ? '浏览器已判定可安装，并触发了安装事件' : '本次页面加载没有触发安装事件');
-
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   push('当前不是独立 App 模式', !standalone, standalone ? '当前已经以独立 App 模式运行' : '当前仍在普通浏览器页面中');
 
@@ -101,6 +103,30 @@ async function initPWADebug() {
     '<div style="margin-top:2px;word-break:break-all">' + String(r.detail).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])) + '</div>' +
     '</div>'
   ).join('');
+
+  const promptRow = document.createElement('div');
+  promptRow.id = 'pwaPromptLive';
+  promptRow.style.cssText = 'padding:8px 0;border-top:1px solid #ddd';
+  promptRow.innerHTML = pwaPromptSeen
+    ? '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">浏览器已触发原生安装事件。</div>'
+    : '<b style="color:#9a6b00">… beforeinstallprompt</b><div style="margin-top:2px">先在页面上点一下，然后保持这个标签页打开 35 秒；这里会实时变绿，不需要刷新。</div>';
+  rowsEl.appendChild(promptRow);
+
+  const started = Date.now();
+  const timer = document.createElement('div');
+  timer.style.cssText = 'padding:8px 0;border-top:1px solid #ddd;color:#444';
+  rowsEl.appendChild(timer);
+
+  const tick = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - started) / 1000);
+    timer.textContent = '本次诊断已等待 ' + elapsed + ' 秒（Chrome 的安装资格还会参考用户互动和停留时间）。';
+    if (pwaPromptSeen || elapsed >= 45) {
+      clearInterval(tick);
+      if (!pwaPromptSeen) {
+        promptRow.innerHTML = '<b style="color:#a11">✗ beforeinstallprompt</b><div style="margin-top:2px">已经等待 45 秒，仍未触发。此时再查 Chrome DevTools → Application → Manifest 的错误/警告。</div>';
+      }
+    }
+  }, 1000);
 }
 
 function practiceName(id) {
