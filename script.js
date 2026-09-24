@@ -92,7 +92,7 @@ async function initPWADebug() {
     pwaPromptSeen ? '浏览器已判定可安装，并触发了安装事件' : '本次页面加载没有触发安装事件');
 
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  push('当前已安装', !standalone, standalone ? '当前已经以独立 App 模式运行' : '当前不是独立 App 模式');
+  push('当前不是独立 App 模式', !standalone, standalone ? '当前已经以独立 App 模式运行' : '当前仍在普通浏览器页面中');
 
   const rowsEl = panel.querySelector('#pwaDebugRows');
   rowsEl.innerHTML = rows.map(r =>
