@@ -846,6 +846,7 @@ body { font-size: 18px; }
   color: #43554b;
   font-size: 18px;
   line-height: 1.8;
+  white-space: pre-line;
 }
 .install-help-ok {
   width: 100%;

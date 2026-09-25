@@ -37,7 +37,7 @@ function shouldCaptureInstallPrompt() {
   if (brands) return false;
 
   const vendorBrowser =
-    /QHBrowser|QihooBrowser|360SE|360EE|360Browser|360 Aphone Browser|QQBrowser|MQQBrowser|UCBrowser|HuaweiBrowser|MiuiBrowser|HeyTapBrowser|OppoBrowser|VivoBrowser|SamsungBrowser|OPR\//i.test(ua);
+    /QHBrowser|QihooBrowser|360SE|360EE|360Browser|360 Aphone Browser|QQBrowser|MQQBrowser|UCBrowser|HuaweiBrowser|HBPC|ArkWeb|HarmonyOS|OpenHarmony|MiuiBrowser|HeyTapBrowser|OppoBrowser|VivoBrowser|SamsungBrowser|OPR\//i.test(ua);
 
   if (vendorBrowser) return false;
   return /Chrome\/|Edg\//i.test(ua);
@@ -696,8 +696,8 @@ function installHelpMessage() {
   if (/QQBrowser|MQQBrowser/i.test(ua)) {
     return '请点浏览器菜单，再找“添加到桌面”或“添加到主屏幕”。';
   }
-  if (/HuaweiBrowser/i.test(ua)) {
-    return '请点浏览器菜单，再选择“添加至桌面”或“添加到主屏幕”。';
+  if (/HuaweiBrowser|HBPC|ArkWeb|HarmonyOS|OpenHarmony/i.test(ua)) {
+    return '华为浏览器：\n1. 点右下角“∷ / 菜单”\n2. 选择“添加至桌面”\n如果先看到“添加至”，再点“桌面”即可。';
   }
   if (/MiuiBrowser/i.test(ua)) {
     return '请点浏览器菜单，再选择“添加到桌面”。';
@@ -780,7 +780,7 @@ function initPWAInstall() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker
-        .register('./service-worker.js?v=20260925-1131', { updateViaCache: 'none' })
+        .register('./service-worker.js?v=20260925-1142', { updateViaCache: 'none' })
         .catch(() => {});
     });
   }
