@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qingyang-v15-20260924-1';
+const CACHE_NAME = 'qingyang-v16-20260925-1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -48,7 +48,7 @@ self.addEventListener('fetch', event => {
 
   const isCoreAsset =
     url.pathname.endsWith('/script.js') ||
-    url.pathname.endsWith('/manifest.webmanifest') ||
+    url.pathname.endsWith('/manifest.json') ||
     url.pathname.endsWith('/assets/css/site.css');
 
   if (isCoreAsset) {

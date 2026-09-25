@@ -883,32 +883,34 @@ body { font-size: 18px; }
 }
 
 
-/* V14: installation entry must stay visible in normal browser mode */
-.install-mobile-cta {
-  display: block;
-  position: fixed;
-  z-index: 2200;
-  right: 22px;
-  bottom: 22px;
-  min-height: 50px;
-  padding: 0 22px;
-  border: 1px solid rgba(255,255,255,.32);
-  background: var(--qy-pine-deep);
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(18,29,23,.28);
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
+/* V16: one clear install entry on each screen size */
+@media (min-width: 821px) {
+  .install-mobile-cta { display: none !important; }
 }
-.install-mobile-cta[hidden] { display: none !important; }
 
 @media (max-width: 820px) {
+  .side-footer { display: none !important; }
+
   .install-mobile-cta {
+    position: fixed;
+    z-index: 2200;
     left: 18px;
     right: 18px;
-    bottom: 18px;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    display: block;
     width: auto;
     min-height: 56px;
+    padding: 0 18px;
+    border: 1px solid rgba(255,255,255,.32);
+    background: var(--qy-pine-deep);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(18,29,23,.28);
     font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    cursor: pointer;
   }
+
+  .install-mobile-cta[hidden] { display: none !important; }
+  body { padding-bottom: 92px; }
 }

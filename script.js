@@ -20,17 +20,48 @@ let timerTicker = null;
 let pwaPromptSeen = false;
 let pwaPromptSeenAt = null;
 let deferredInstallPrompt = null;
+let pwaPromptStrategy = 'browser-managed';
+
+function isStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone === true;
+}
+
+function shouldCaptureInstallPrompt() {
+  const ua = navigator.userAgent || '';
+  const brands = Array.isArray(navigator.userAgentData?.brands)
+    ? navigator.userAgentData.brands.map(item => item.brand || '').join(' ')
+    : '';
+
+  if (/Google Chrome|Microsoft Edge/i.test(brands)) return true;
+  if (brands) return false;
+
+  const vendorBrowser =
+    /QHBrowser|QihooBrowser|360SE|360EE|360Browser|360 Aphone Browser|QQBrowser|MQQBrowser|UCBrowser|HuaweiBrowser|MiuiBrowser|HeyTapBrowser|OppoBrowser|VivoBrowser|SamsungBrowser|OPR\//i.test(ua);
+
+  if (vendorBrowser) return false;
+  return /Chrome\/|Edg\//i.test(ua);
+}
 
 window.addEventListener('beforeinstallprompt', event => {
-  event.preventDefault();
-  deferredInstallPrompt = event;
   pwaPromptSeen = true;
   pwaPromptSeenAt = Date.now();
+
+  if (shouldCaptureInstallPrompt()) {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    pwaPromptStrategy = 'captured';
+  } else {
+    deferredInstallPrompt = null;
+    pwaPromptStrategy = 'browser-managed';
+  }
 
   const live = document.querySelector('#pwaPromptLive');
   if (live) {
     live.dataset.state = 'ok';
-    live.innerHTML = '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">浏览器已提供原生安装窗口；页面上的“添加到手机桌面”按钮现在可以直接调起它。</div>';
+    live.innerHTML = pwaPromptStrategy === 'captured'
+      ? '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">Chrome / Edge 已提供原生安装窗口；页面按钮可以直接调起。</div>'
+      : '<b style="color:#176b3a">✓ 浏览器提供安装能力</b><div style="margin-top:2px">当前浏览器保留自己的安装提示；页面按钮仍提供手动入口。</div>';
   }
 });
 
@@ -114,7 +145,7 @@ async function initPWADebug() {
   promptRow.style.cssText = 'padding:8px 0;border-top:1px solid #ddd';
   promptRow.innerHTML = pwaPromptSeen
     ? '<b style="color:#176b3a">✓ beforeinstallprompt</b><div style="margin-top:2px">浏览器已触发原生安装事件。</div>'
-    : '<b style="color:#9a6b00">… beforeinstallprompt</b><div style="margin-top:2px">先在页面上点一下，然后保持这个标签页打开 35 秒；这里会实时变绿，不需要刷新。</div>';
+    : '<b style="color:#9a6b00">… beforeinstallprompt</b><div style="margin-top:2px">如果浏览器提供原生安装事件，这里会实时变绿；360 等浏览器也可能直接使用自己的安装提示。</div>';
   rowsEl.appendChild(promptRow);
 
   const started = Date.now();
@@ -124,11 +155,11 @@ async function initPWADebug() {
 
   const tick = setInterval(() => {
     const elapsed = Math.floor((Date.now() - started) / 1000);
-    timer.textContent = '本次诊断已等待 ' + elapsed + ' 秒（Chrome 的安装资格还会参考用户互动和停留时间）。';
+    timer.textContent = '本次诊断已等待 ' + elapsed + ' 秒；是否提供原生安装事件由浏览器决定。';
     if (pwaPromptSeen || elapsed >= 45) {
       clearInterval(tick);
       if (!pwaPromptSeen) {
-        promptRow.innerHTML = '<b style="color:#a11">✗ beforeinstallprompt</b><div style="margin-top:2px">已经等待 45 秒，仍未触发。此时再查 Chrome DevTools → Application → Manifest 的错误/警告。</div>';
+        promptRow.innerHTML = '<b style="color:#a11">✗ beforeinstallprompt</b><div style="margin-top:2px">当前浏览器没有向网页暴露 beforeinstallprompt；仍可使用页面上的安装按钮或浏览器菜单。</div>';
       }
     }
   }, 1000);
@@ -652,9 +683,18 @@ function hideInstallDialog() {
 
 function installHelpMessage() {
   const ua = navigator.userAgent || '';
+  const isiOS =
+    /iPad|iPhone|iPod/i.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-  if (/QHBrowser|360SE|360EE|360Browser/i.test(ua)) {
-    return '请点屏幕下方中间的“≡”菜单，再点“添加到主屏幕”。';
+  if (isiOS) {
+    return '请用 Safari 打开本页，点“分享”按钮，再选“添加到主屏幕”。';
+  }
+  if (/QHBrowser|QihooBrowser|360SE|360EE|360Browser|360 Aphone Browser/i.test(ua)) {
+    return '如果 360 没有自动提示，请点底部“≡ / 菜单”，再选“添加到主屏幕”或“添加到桌面”。';
+  }
+  if (/QQBrowser|MQQBrowser/i.test(ua)) {
+    return '请点浏览器菜单，再找“添加到桌面”或“添加到主屏幕”。';
   }
   if (/HuaweiBrowser/i.test(ua)) {
     return '请点浏览器菜单，再选择“添加至桌面”或“添加到主屏幕”。';
@@ -665,17 +705,14 @@ function installHelpMessage() {
   if (/HeyTapBrowser|OppoBrowser|VivoBrowser/i.test(ua)) {
     return '请点浏览器菜单，再选择“添加到桌面”或“添加到主屏幕”。';
   }
-  if (/EdgA|EdgiOS/i.test(ua)) {
-    return '请点浏览器菜单，再选择“添加到手机”或“添加到主屏幕”。';
+  if (/Android/i.test(ua)) {
+    return '请点浏览器的“菜单 / 更多”，再找“安装应用”“添加到主屏幕”或“添加到桌面”。';
   }
-  if (/Chrome|CriOS/i.test(ua)) {
-    return '请点浏览器菜单，再选择“添加到主屏幕”或“安装应用”。';
-  }
-  return '请点浏览器的“菜单 / 更多”，再找“添加到桌面”“添加到主屏幕”或“创建快捷方式”。';
+  return '请点地址栏里的安装图标；如果没有，请打开浏览器菜单，选择“安装应用”或“将此网站作为应用安装”。';
 }
 
 function setInstallButtonsVisible(visible) {
-  $('[data-install-app]').forEach(button => {
+  $$('[data-install-app]').forEach(button => {
     button.hidden = !visible;
   });
 }
@@ -693,20 +730,29 @@ function hideInstallHelp() {
 }
 
 function initPWAInstall() {
-  // 在普通网页里始终显示安装入口；安装成功后再隐藏。
-  setInstallButtonsVisible(true);
+  setInstallButtonsVisible(!isStandaloneMode());
 
-  $('[data-install-app]').forEach(button => {
+  $$('[data-install-app]').forEach(button => {
     button.addEventListener('click', async () => {
+      if (isStandaloneMode()) {
+        setInstallButtonsVisible(false);
+        return;
+      }
+
       if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
+        const prompt = deferredInstallPrompt;
+        deferredInstallPrompt = null;
+
         try {
-          const choice = await deferredInstallPrompt.userChoice;
-          if (choice && choice.outcome === 'accepted') {
+          await prompt.prompt();
+          const choice = await prompt.userChoice;
+          if (choice?.outcome === 'accepted') {
             setInstallButtonsVisible(false);
+            return;
           }
         } catch {}
-        deferredInstallPrompt = null;
+
+        showInstallHelp();
         return;
       }
 
@@ -733,7 +779,9 @@ function initPWAInstall() {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js?v=20260924-1530', { updateViaCache: 'none' }).catch(() => {});
+      navigator.serviceWorker
+        .register('./service-worker.js?v=20260925-1131', { updateViaCache: 'none' })
+        .catch(() => {});
     });
   }
 }
